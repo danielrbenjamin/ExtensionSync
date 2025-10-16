@@ -6,6 +6,7 @@ async function saveSettings(token, gistId) {
   await chrome.storage.sync.set({ token, gistId });
 }
 
+// Save button
 document.getElementById("save").onclick = async () => {
   const token = document.getElementById("token").value.trim();
   const gistId = document.getElementById("gistId").value.trim();
@@ -13,6 +14,7 @@ document.getElementById("save").onclick = async () => {
   alert("✅ Settings saved.");
 };
 
+// Upload button
 document.getElementById("upload").onclick = async () => {
   const { token, gistId } = await getSettings();
   if (!token || !gistId) return alert("Please set token and gist ID first.");
@@ -22,6 +24,7 @@ document.getElementById("upload").onclick = async () => {
   alert("✅ Extensions uploaded to Gist!");
 };
 
+// Sync / show missing
 document.getElementById("sync").onclick = async () => {
   const { token, gistId } = await getSettings();
   if (!token || !gistId) return alert("Please set token and gist ID first.");
@@ -42,14 +45,26 @@ document.getElementById("sync").onclick = async () => {
   missing.forEach(ext => {
     const div = document.createElement("div");
     div.className = "ext-card";
-    div.innerHTML = `
-      <h4>${ext.name}</h4>
-      <button>Add to Chrome</button>
-    `;
-    div.querySelector("button").onclick = () => {
-      const url = `https://chrome.google.com/webstore/detail/${ext.id}`;
-      chrome.tabs.create({ url });
-    };
+
+    if (ext.installType === "normal") {
+      // Web Store extension → show Add button
+      div.innerHTML = `
+        <h4>${ext.name}</h4>
+        <small>${ext.version}</small>
+        <button>Add to Chrome</button>
+      `;
+      div.querySelector("button").onclick = () => {
+        const url = `https://chrome.google.com/webstore/detail/${ext.id}`;
+        chrome.tabs.create({ url });
+      };
+    } else {
+      // Local/unpacked → show (local) tag, no button
+      div.innerHTML = `
+        <h4>${ext.name} <small>(local)</small></h4>
+        <small>${ext.version}</small>
+      `;
+    }
+
     container.appendChild(div);
   });
 };

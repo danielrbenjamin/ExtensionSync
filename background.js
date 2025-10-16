@@ -1,3 +1,8 @@
+//
+// Background script for ExtensionSync
+//
+
+// Get all installed extensions with installType
 async function getInstalledExtensions() {
   const all = await chrome.management.getAll();
   return all
@@ -6,16 +11,16 @@ async function getInstalledExtensions() {
       id: e.id,
       name: e.name,
       version: e.version,
-      homepageUrl: e.homepageUrl || null
+      homepageUrl: e.homepageUrl || null,
+      installType: e.installType // "normal", "development", "sideload", etc.
     }));
 }
 
+// Upload extensions to a GitHub Gist
 async function uploadToGist(token, gistId, extensions) {
   const body = {
     files: {
-      "extensions.json": {
-        content: JSON.stringify(extensions, null, 2)
-      }
+      "extensions.json": { content: JSON.stringify(extensions, null, 2) }
     }
   };
 
@@ -32,6 +37,7 @@ async function uploadToGist(token, gistId, extensions) {
   return await res.json();
 }
 
+// Download extensions from GitHub Gist
 async function downloadFromGist(token, gistId) {
   const res = await fetch(`https://api.github.com/gists/${gistId}`, {
     headers: { "Authorization": `token ${token}` }
@@ -41,6 +47,7 @@ async function downloadFromGist(token, gistId) {
   return JSON.parse(data.files["extensions.json"].content);
 }
 
+// Listen for messages from popup
 chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
   (async () => {
     try {
