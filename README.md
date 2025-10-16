@@ -44,3 +44,6 @@ Automatically back up your installed extensions to a Gist, and restore them anyw
 - Your GitHub Token
 - Your Gist ID
 4. Click Upload to back up your extensions, or Check Missing Extensions to restore them.
+
+
+<a target="_blank" href="https://icons8.com/icon/48332/puzzle">Extension</a> icon by <a target="_blank" href="https://icons8.com">Icons8</a>
