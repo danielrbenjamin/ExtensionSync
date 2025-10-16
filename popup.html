@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>ExtensionSync</title>
+  <style>
+    :root {
+      /* Material 3 color tokens */
+      --md-sys-color-primary: #1e88e5;
+      --md-sys-color-primary-container: #e3f2fd;
+      --md-sys-color-surface: #ffffff;
+      --md-sys-color-outline: #e0e0e0;
+      --md-sys-color-on-primary: #ffffff;
+      --md-sys-color-on-surface: #1a1a1a;
+      --md-sys-shape-corner: 12px;
+      --md-elevation-1: 0 1px 3px rgba(0, 0, 0, 0.12),
+                        0 1px 2px rgba(0, 0, 0, 0.24);
+    }
+
+    body {
+      font-family: 'Segoe UI', Roboto, system-ui, sans-serif;
+      width: 340px;
+      margin: 0;
+      padding: 16px;
+      background: var(--md-sys-color-surface);
+      color: var(--md-sys-color-on-surface);
+    }
+
+    h2 {
+      font-size: 18px;
+      margin: 0 0 4px 0;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    p {
+      margin: 0 0 12px 0;
+      font-size: 13px;
+      color: #555;
+    }
+
+    .card {
+      background: var(--md-sys-color-surface);
+      border-radius: var(--md-sys-shape-corner);
+      box-shadow: var(--md-elevation-1);
+      padding: 12px 16px;
+      margin-bottom: 12px;
+    }
+
+    input {
+      width: 100%;
+      margin-top: 8px;
+      padding: 8px;
+      border-radius: 8px;
+      border: 1px solid var(--md-sys-color-outline);
+      font-size: 13px;
+      box-sizing: border-box;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    input:focus {
+      border-color: var(--md-sys-color-primary);
+    }
+
+    button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      background: var(--md-sys-color-primary);
+      color: var(--md-sys-color-on-primary);
+      border: none;
+      border-radius: 8px;
+      padding: 8px 14px;
+      cursor: pointer;
+      font-size: 13px;
+      margin-top: 8px;
+      transition: background 0.2s, transform 0.1s;
+    }
+
+    button:hover {
+      background: #1565c0;
+    }
+
+    button:active {
+      transform: scale(0.97);
+    }
+
+    #missing {
+      margin-top: 12px;
+    }
+
+    .ext-card {
+      background: var(--md-sys-color-primary-container);
+      border-radius: 8px;
+      padding: 10px;
+      margin-top: 8px;
+      box-shadow: var(--md-elevation-1);
+    }
+
+    .ext-card h4 {
+      margin: 0 0 2px 0;
+      font-size: 14px;
+    }
+
+    .ext-card small {
+      color: #555;
+    }
+  </style>
+</head>
+<body>
+  <h2>🔄 ExtensionSync</h2>
+  <p><small>Sync your extensions list with a GitHub Gist.</small></p>
+
+  <div class="card">
+    <input id="token" type="password" placeholder="GitHub Token">
+    <input id="gistId" type="text" placeholder="Gist ID">
+    <button id="save">💾 Save Settings</button>
+  </div>
+
+  <div class="card">
+    <button id="upload">⬆️ Upload Current Extensions</button>
+    <button id="sync">🔍 Check Missing Extensions</button>
+  </div>
+
+  <div id="missing"></div>
+
+  <script src="popup.js"></script>
+</body>
+</html>
