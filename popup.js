@@ -6,15 +6,57 @@ async function saveSettings(token, gistId) {
   await chrome.storage.sync.set({ token, gistId });
 }
 
-// Save button
-document.getElementById("save").onclick = async () => {
-  const token = document.getElementById("token").value.trim();
-  const gistId = document.getElementById("gistId").value.trim();
-  await saveSettings(token, gistId);
-  alert("✅ Settings saved.");
-};
+// Render UI depending on saved settings
+async function renderSettingsView() {
+  const settingsContainer = document.getElementById("settings");
+  const { token, gistId } = await getSettings();
 
-// Upload button
+  if (token && gistId) {
+    // ✅ Settings already saved → show summary view
+    settingsContainer.innerHTML = `
+      <div class="settings-summary">
+        <p>✅ <strong>Settings saved</strong></p>
+        <p><b>Gist ID:</b> <code>${gistId}</code></p>
+        <div style="display:flex; gap:8px;">
+          <button id="editSettings">✏️ Edit Settings</button>
+        </div>
+      </div>
+    `;
+    document.getElementById("editSettings").onclick = showSettingsForm;
+  } else {
+    // ❌ No settings → show input form
+    showSettingsForm();
+  }
+}
+
+function showSettingsForm() {
+  const settingsContainer = document.getElementById("settings");
+  settingsContainer.innerHTML = `
+    <div class="settings-form">
+      <label>GitHub Token:</label>
+      <input type="password" id="token" placeholder="ghp_..." />
+      <label>Gist ID:</label>
+      <input type="text" id="gistId" placeholder="Your Gist ID" />
+      <div style="display:flex; gap:8px; margin-top:8px;">
+        <button id="save">💾 Save</button>
+        <button id="cancel">❌ Cancel</button>
+      </div>
+    </div>
+  `;
+
+  document.getElementById("save").onclick = async () => {
+    const token = document.getElementById("token").value.trim();
+    const gistId = document.getElementById("gistId").value.trim();
+    if (!token || !gistId) return alert("Please fill in both fields.");
+    await saveSettings(token, gistId);
+    alert("✅ Settings saved.");
+    renderSettingsView();
+  };
+
+  document.getElementById("cancel").onclick = renderSettingsView;
+}
+
+// Upload extensions to Gist
 document.getElementById("upload").onclick = async () => {
   const { token, gistId } = await getSettings();
   if (!token || !gistId) return alert("Please set token and gist ID first.");
@@ -24,7 +66,7 @@ document.getElementById("upload").onclick = async () => {
   alert("✅ Extensions uploaded to Gist!");
 };
 
-// Sync / show missing
+// Sync and compare extensions
 document.getElementById("sync").onclick = async () => {
   const { token, gistId } = await getSettings();
   if (!token || !gistId) return alert("Please set token and gist ID first.");
@@ -47,7 +89,6 @@ document.getElementById("sync").onclick = async () => {
     div.className = "ext-card";
 
     if (ext.installType === "normal") {
-      // Web Store extension → show Add button
       div.innerHTML = `
         <h4>${ext.name}</h4>
         <small>${ext.version}</small>
@@ -58,7 +99,6 @@ document.getElementById("sync").onclick = async () => {
         chrome.tabs.create({ url });
       };
     } else {
-      // Local/unpacked → show (local) tag, no button
       div.innerHTML = `
         <h4>${ext.name} <small>(local)</small></h4>
         <small>${ext.version}</small>
@@ -68,3 +108,6 @@ document.getElementById("sync").onclick = async () => {
     container.appendChild(div);
   });
 };
+
+// Initialize on popup load
+renderSettingsView();
