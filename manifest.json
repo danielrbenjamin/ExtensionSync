@@ -3,6 +3,7 @@
   "name": "ExtensionSync",
   "version": "0.1",
   "description": "Sync and manage Chrome extensions via a GitHub Gist.",
+  "author": "Daniel Benjamin",
   "permissions": [
     "management",
     "storage",
